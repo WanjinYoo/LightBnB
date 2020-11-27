@@ -2,12 +2,24 @@ module.exports = function(router, database) {
 
   router.get('/properties', (req, res) => {
     database.getAllProperties(req.query, 20)
-    .then(properties => res.send({properties}))
-    .catch(e => {
-      console.error(e);
-      res.send(e)
-    }); 
+      .then(properties => res.send({properties}))
+      .catch(e => {
+        console.error(e);
+        res.send(e);
+      });
   });
+  router.post('/reservation',(req, res) => {
+    const data = {
+      start_date : req.body.start_date,
+      end_date : req.body.end_date,
+      property_id : req.body.property_id,
+      guest_id : req.session.userId
+    };
+    console.log(data);
+    database.addReservation(data)
+      .then((data) => res.redirect(`/`));
+  });
+
 
   router.get('/reservations', (req, res) => {
     const userId = req.session.userId;
@@ -16,12 +28,13 @@ module.exports = function(router, database) {
       return;
     }
     database.getAllReservations(userId)
-    .then(reservations => res.send({reservations}))
-    .catch(e => {
-      console.error(e);
-      res.send(e)
-    });
+      .then(reservations => res.send({reservations}))
+      .catch(e => {
+        console.error(e);
+        res.send(e);
+      });
   });
+  
 
   router.post('/properties', (req, res) => {
     const userId = req.session.userId;
@@ -31,9 +44,9 @@ module.exports = function(router, database) {
       })
       .catch(e => {
         console.error(e);
-        res.send(e)
+        res.send(e);
       });
   });
 
   return router;
-}
+};

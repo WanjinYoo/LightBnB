@@ -59,6 +59,22 @@ const addUser =  function(user) {
 };
 exports.addUser = addUser;
 
+const addReservation = function (reservation) {
+  const start_date = reservation.start_date;
+  const end_date = reservation.end_date;
+  const property_id = reservation.property_id;
+  const guest_id = reservation.guest_id;
+
+  return db.query(`
+    INSERT INTO reservations (start_date,end_date,property_id,guest_id) VALUES ($1,$2,$3,$4) RETURNING *
+  `,[start_date,end_date,property_id,guest_id])
+    .then((res) => {
+      console.log(res);
+      return res.rows[0];
+    });
+};
+exports.addReservation = addReservation;
+
 /// Reservations
 
 /**
@@ -130,8 +146,6 @@ const getAllProperties = function(options, limit = 10) {
   LIMIT $${queryParams.length};
   `;
 
-  // 5
-  console.log(queryString, queryParams);
 
   // 6
   return db.query(queryString, queryParams)

@@ -53,6 +53,7 @@ module.exports = function(router, database) {
     res.send({});
   });
 
+
   router.get("/me", (req, res) => {
     const userId = req.session.userId;
     if (!userId) {
